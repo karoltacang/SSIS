@@ -19,24 +19,20 @@ def delete(file_path, unique_id):
 
     header, rows = read_csv(child_file)
     header = [h.strip() for h in header]
-    
-    if child_key not in header:
-        print(f"Error: Child key '{child_key}'  not found in {DEPENDENCY_MAP[file_path]['file']}")
-        return False
-    elif parent_key not in header:
-        print(f"Error: Parent key'{parent_key}' not found in {DEPENDENCY_MAP[file_path]['file']}")
-        return False
-    
-    child_data = [dict(zip(header, row)) for row in rows]
-    to_delete = [row[child_key] for row in child_data if row[parent_key] == unique_id]
-    
-    updated_child_data = [row for row in child_data if row[parent_key] != unique_id]
-    if not write_csv(child_file, header, [[row[key] for key in header] for row in updated_child_data]):
+
+    if parent_key not in header:
+        print(f"Error: Parent key '{parent_key}' not found in {child_file}")
         return False
 
-    for child_id in to_delete:
-        if not delete(child_file, child_id):
-            return False
+    updated_rows = []
+    for row in rows:
+        row_dict = dict(zip(header, row))
+        if row_dict.get(parent_key) == unique_id:
+            row_dict[parent_key] = "NULL"
+        updated_rows.append([row_dict.get(h, "") for h in header])
+
+    if not write_csv(child_file, header, updated_rows):
+        return False
 
     return delete_row_from_csv(file_path, unique_id)
 
