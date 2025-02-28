@@ -66,10 +66,6 @@ python main.py
 
 ## **Future Improvements**
 - Improve UI design
-- Add search by fields
-- Improve search function to handle big data
-- Improve "Add" function to add data in any file regardless of current tab
-- Improve "Edit" function to edit data dynamically
 - Add export/import CSV functionality  
 - Implement a database instead of CSV files  
 
