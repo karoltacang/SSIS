@@ -40,10 +40,8 @@ def delete_row_from_table(main_window, file_path, unique_id, row):
     if not file_path:
         return
 
-    if "data/students.csv" == file_path:
-        confirm = main_window.confirm_action(f"Delete this student?")
-    else:
-        confirm = main_window.confirm_action(f"Delete {unique_id}? This will remove related records.")
+
+    confirm = main_window.confirm_action(f"Are you sure you want to delete {unique_id}?")
         
     if not confirm:
         return
