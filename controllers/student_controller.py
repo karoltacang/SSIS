@@ -60,6 +60,7 @@ class EditStudent(QDialog):
             
             self.programInput.valid_codes = set(programs)
             self.programInput.clear()
+            self.programInput.addItem("")
             self.programInput.addItems(sorted(programs))
             
             # Set up completer
@@ -193,7 +194,13 @@ class EditStudent(QDialog):
         
         # Validate program code
         if program and hasattr(self.programInput, 'valid_codes'):
-            is_valid_code = any(code.lower() == program.lower() for code in self.programInput.valid_codes)
+            is_valid_code = False
+            for code in self.programInput.valid_codes:
+                if code.lower() == program.lower():
+                    if code != program:
+                        self.programInput.setCurrentText(code)  # Auto-correct case
+                    is_valid_code = True
+                    break
             if not is_valid_code:
                 is_valid = False
                 error_messages.append("Please choose a valid Program.")

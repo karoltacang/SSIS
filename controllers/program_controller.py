@@ -57,6 +57,7 @@ class EditProgram(QDialog):
             
             self.collegeInput.valid_codes = set(colleges)
             self.collegeInput.clear()
+            self.collegeInput.addItem("")
             self.collegeInput.addItems(sorted(colleges))
             
             # Set up completer
@@ -153,11 +154,23 @@ class EditProgram(QDialog):
             error_messages.append("Program Name must contain only letters")
         
         # Validate college code
-        if college and hasattr(self.collegeInput, 'valid_codes'):
-            is_valid_code = any(code.lower() == college.lower() for code in self.collegeInput.valid_codes)
-            if not is_valid_code:
+        if isinstance(self.collegeInput, QComboBox):
+            current_text = self.collegeInput.currentText().strip()
+            
+            if not current_text or (not self.collegeInput.isEditable() and self.collegeInput.currentIndex() == 0):
                 is_valid = False
-                error_messages.append("Please choose a valid College.")
+                found_empty_field = True
+            elif hasattr(self.collegeInput, 'valid_codes'):
+                is_valid_code = False
+                for code in self.collegeInput.valid_codes:
+                    if code.lower() == current_text.lower():
+                        if code != current_text:
+                            self.collegeInput.setCurrentText(code)
+                        is_valid_code = True
+                        break
+                if not is_valid_code:
+                    is_valid = False
+                    error_messages.append("Please choose a valid College.")
         
         # Set error messages
         if found_empty_field:
